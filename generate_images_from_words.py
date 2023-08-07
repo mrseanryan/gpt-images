@@ -23,21 +23,32 @@ def download_to(url, file_path):
     r = requests.get(url, allow_redirects=True)
     open(file_path, 'wb').write(r.content)
 
+def calculate_word_out_path(word, output_dir, index):
+    word = word.replace(' ', '-')
+    return os.path.join(output_dir, f"{word}_{index}.jpg")
+
 def generate_images_for_word(word, output_dir):
     urls = service_images.generate_images(word, config.IMAGES_PER_WORD)
     index = 1
     for url in urls:
-        word = word.replace(' ', '-')
-        download_to(url, os.path.join(output_dir, f"{word}_{index}.jpg"))
+        download_to(url, calculate_word_out_path(word, output_dir, index))
         index += 1
+
+def are_images_already_generated(word, output_path_images_dir):
+    out_file_path = calculate_word_out_path(word, output_path_images_dir, 1)
+    return os.path.exists(out_file_path)
 
 if config.IS_DEBUG:
     words = [words[0]]
 
 for word in words:
     print(f"{word}...")
-    generate_images_for_word(word, output_path_images_dir)
-    print("... (wait a bit) ...")
-    util_wait.wait_seconds(config.WAIT_BETWEEN_IMAGES_IN_SECONDS)
+    if are_images_already_generated(word, output_path_images_dir):
+        print(f"[skipping] - already have images")
+    else:
+        generate_images_for_word(word, output_path_images_dir)
+        print("[generated]")
+        print("... (wait a bit) ...")
+        util_wait.wait_seconds(config.WAIT_BETWEEN_IMAGES_IN_SECONDS)
 
 print(f"[done] - see {output_path_images_dir}")
