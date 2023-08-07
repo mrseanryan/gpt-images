@@ -47,7 +47,7 @@ for word in words:
     if are_images_already_generated(word, output_path_images_dir):
         print(f"[skipping] - already have images")
     else:
-        print(f" ... generating for {word} ...")
+        print(f" ... generating ...")
         generate_images_for_word(word, output_path_images_dir)
         print("[generated]")
         print("... (wait a bit) ...")
