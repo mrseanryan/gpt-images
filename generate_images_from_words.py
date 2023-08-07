@@ -45,12 +45,11 @@ for word in words:
     word = word.strip()
     print(f"{word}...")
     if are_images_already_generated(word, output_path_images_dir):
-        print(f"[skipping] - already have images")
+        print(f"    [skipping] - already have images")
     else:
         print(f" ... generating ...")
         generate_images_for_word(word, output_path_images_dir)
-        print("[generated]")
-        print("... (wait a bit) ...")
+        print("    [generated]")
         util_wait.wait_seconds(config.WAIT_BETWEEN_IMAGES_IN_SECONDS)
 
 print(f"[done] - see {output_path_images_dir}")

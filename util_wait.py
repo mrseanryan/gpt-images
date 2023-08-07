@@ -1,5 +1,5 @@
 import time
 
 def wait_seconds(seconds):
-    print(f"Waiting {seconds}s...")
+    print(f"    waiting {seconds}s...")
     time.sleep(seconds)
