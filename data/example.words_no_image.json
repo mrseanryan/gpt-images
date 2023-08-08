@@ -1,0 +1,16 @@
+{
+  "words_no_image": [
+    "sluice",
+    "tuna",
+    "veranda",
+    "vinegar",
+    "vodka",
+    "walleyed",
+    "zabuton"
+  ],
+  "complex_words": [
+    { "word": "shabrack", "description": "a saddlecloth for a horse, formerly used by European light cavalry. The shabraque was an accoutrement of the hussar cavalry, based on the Hungarian horsemen"},
+    { "word": "shako", "description": "a tall, cylindrical military cap, usually with a visor, and sometimes tapered at the top. It is usually adorned with an ornamental plate or badge"},
+    { "word": "shibboleth", "description": "a group of old people standing together in consultation"}
+  ]
+}

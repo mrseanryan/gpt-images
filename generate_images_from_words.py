@@ -16,8 +16,8 @@ if (len(argv) != 3):
 path_to_json_words = argv[1]
 output_path_images_dir = argv[2]
 
-words = util_json.read_words_from_json_file(path_to_json_words)
-print(f"Generating images for {len(words)} words ...")
+words_to_description = util_json.read_words_from_json_file(path_to_json_words)
+print(f"Generating images for {len(words_to_description.keys())} words ...")
 
 def download_to(url, file_path):
     r = requests.get(url, allow_redirects=True)
@@ -27,8 +27,8 @@ def calculate_word_out_path(word, output_dir, index):
     word = word.replace(' ', '-')
     return os.path.join(output_dir, f"{word}_{index}.jpg")
 
-def generate_images_for_word(word, output_dir):
-    urls = service_images.generate_images(word, config.IMAGES_PER_WORD)
+def generate_images_for_word(word, description, output_dir):
+    urls = service_images.generate_images(description, config.IMAGES_PER_WORD)
     index = 1
     for url in urls:
         download_to(url, calculate_word_out_path(word, output_dir, index))
@@ -39,16 +39,19 @@ def are_images_already_generated(word, output_path_images_dir):
     return os.path.exists(out_file_path)
 
 if config.IS_DEBUG:
-    words = [words[0]]
+    reduced = dict()
+    word = list(words_to_description.keys())[0]
+    reduced[word] = words_to_description[word]
+    words_to_description = reduced
 
-for word in words:
+for word in words_to_description.keys():
     word = word.strip()
     print(f"{word}...")
     if are_images_already_generated(word, output_path_images_dir):
         print(f"    [skipping] - already have images")
     else:
         print(f" ... generating ...")
-        generate_images_for_word(word, output_path_images_dir)
+        generate_images_for_word(word, words_to_description[word], output_path_images_dir)
         print("    [generated]")
         util_wait.wait_seconds(config.WAIT_BETWEEN_IMAGES_IN_SECONDS)
 

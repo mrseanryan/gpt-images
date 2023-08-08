@@ -6,7 +6,7 @@ openai.api_key = service_api_key.get_openai_key()
 
 def generate_images(word, image_count):
     prompt = f"""
-        Generate an image that is a typical representation of : {word}.
+        Generate an image that is a typical representation of: <<{word}>>.
         The image must be as realistic as possible, and for a general audience.
 
         IMPORTANT: do NOT place any text or words in the image.
