@@ -1,10 +1,14 @@
 import json
 
 def read_from_json_file(path_to_json):
-    f = open(path_to_json)
-    data = json.load(f)
-    f.close()
-    return data
+    with open(path_to_json) as f:
+        data = json.load(f)
+        return data
+
+def write_to_json_file(file_dict, path_to_json):
+    with open(path_to_json, 'w') as f:
+        json_str = json.dumps(file_dict, indent=2)
+        f.write(json_str)
 
 def read_words_from_json_file(path_to_json):
     json = read_from_json_file(path_to_json)
@@ -18,3 +22,9 @@ def read_words_from_json_file(path_to_json):
         words_to_description[word_and_description['word']] = word_and_description['description']
 
     return words_to_description
+
+def write_words_to_json_file(words_to_description, path_to_json):
+    file_dict = dict()
+    file_dict['words_no_image'] = []
+    file_dict['complex_words'] = words_to_description
+    write_to_json_file(file_dict, path_to_json)

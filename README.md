@@ -19,6 +19,8 @@ The **LLM's that generate the images have a limited vocabulary**, so words such 
 Also, some words can trigger the safety features of the LLM, for example 'trauma' or 'gruesome'.
 For such words, you can add a description to describe the image you would like to see, that represents the word, in the 'complex_words' section of the JSON file.
 
+To set up the JSON structure, you can run `./add_complex_word_templates.sh`.
+
 See the example at [./data/example.words_no_image.json](./data/example.words_no_image.json).
 
 4. Run ./go.sh
