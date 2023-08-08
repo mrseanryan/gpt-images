@@ -18,8 +18,8 @@ def read_words_from_json_file(path_to_json):
         words_to_description[word] = word
     if 'complex_words' in json:
         complex_words = json['complex_words']
-    for word_and_description in complex_words:
-        words_to_description[word_and_description['word']] = word_and_description['description']
+    for word in complex_words.keys():
+        words_to_description[word] = complex_words[word]
 
     return words_to_description
 
