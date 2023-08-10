@@ -55,3 +55,6 @@ Load in current terminal:
 
 ```
 source ~/.zprofile
+```
+
+Setup is done.
