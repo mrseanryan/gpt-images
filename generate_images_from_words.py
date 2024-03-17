@@ -21,6 +21,7 @@ print(f"Generating images for {len(words_to_description.keys())} words ...")
 
 def download_to(url, file_path):
     r = requests.get(url, allow_redirects=True)
+    print(f"  saving image at {file_path}")
     open(file_path, 'wb').write(r.content)
 
 def calculate_word_out_path(word, output_dir, index):
@@ -33,7 +34,6 @@ def generate_images_for_word(word, description, output_dir):
     for url in urls:
         download_to(url, calculate_word_out_path(word, output_dir, index))
         index += 1
-    util_wait.wait_seconds(config.WAIT_BETWEEN_IMAGES_IN_SECONDS * config.IMAGES_PER_WORD)
 
 def are_images_already_generated(word, output_path_images_dir):
     out_file_path = calculate_word_out_path(word, output_path_images_dir, 1)
@@ -45,7 +45,9 @@ if config.IS_DEBUG:
     reduced[word] = words_to_description[word]
     words_to_description = reduced
 
+w = 0
 for word in words_to_description.keys():
+    w += 1
     word = word.strip()
     print(f"{word}...")
     if are_images_already_generated(word, output_path_images_dir):
@@ -54,5 +56,7 @@ for word in words_to_description.keys():
         print(f" ... generating ...")
         generate_images_for_word(word, words_to_description[word], output_path_images_dir)
         print("    [generated]")
+        if w != len(words_to_description):
+            util_wait.wait_seconds(config.WAIT_BETWEEN_IMAGES_IN_SECONDS * config.IMAGES_PER_WORD)
 
 print(f"[done] - see {output_path_images_dir}")
