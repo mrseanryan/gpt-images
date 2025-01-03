@@ -11,8 +11,9 @@ Simple Python client to generate images from a word-list via Open AI (DAL-E)
 ## Usage
 
 1. Set up (see the Setup section)
-2. Edit the list of words at [./data/words_no_image.json](./data/words_no_image.json).
-3. For **more abstract or complex words, the AI will need your help** to generate better images.
+2. Adjust [config.py](./config.py) to suit.
+3. Edit the list of words at [./data/words_no_image.json](./data/words_no_image.json).
+4. For **more abstract or complex words, the AI will need your help** to generate better images.
 
 The **LLM's that generate the images have a limited vocabulary**, so words such as
 'zabuton' or 'wadi' are not (currently) correctly recognised. Also some words are so abstract, even for a human it is difficult to depict as an image (consider 'depression' or 'friendship' or 'shibboleth').
@@ -23,7 +24,7 @@ To set up the JSON structure, you can run `./add_complex_word_templates.sh`.
 
 See the example at [./data/example.words_no_image.json](./data/example.words_no_image.json).
 
-4. Run ./go.sh
+5. Run ./go.sh
 
 OR:
 
@@ -31,7 +32,10 @@ OR:
 python ./generate_images_from_words.py <path to JSON file> <path to output directory>
 ```
 
-4. Check the images at the output directory. By default this is [./output](./output).
+6. Check the images at the output directory. By default this is [./output](./output).
+
+- to retry: delete any images you do not like, and then run again.
+- consider switching up to a better model (see [config.py](./config.py))
 
 ## Set up
 
