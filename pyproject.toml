@@ -1,0 +1,51 @@
+[tool.poetry]
+name = "gpt-images"
+version = "0.1.0"
+description = "Combine multiple graphql-based or function-based agents with dynamic routing - based on atomic-agents."
+authors = ["Sean Ryan <mr.sean.ryan@gmail.com>"]
+readme = "README.md"
+license = "MIT"
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+keywords = ["genai", "image-generation", "image-generator-using-openai-api", "genai", "image-generation-ai", "python", "ai", "artificial-intelligence", "openai", "openai-api", "large-language-models", "llm", "large-language-model"]
+homepage = "https://github.com/mrseanryan/gpt-images"
+repository = "https://github.com/mrseanryan/gpt-images"
+documentation = "https://github.com/mrseanryan/gpt-images"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+openai = "^1.54.3"
+cornsnake = "^0.0.74"
+
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.14.0"
+ruff = "^0.8.0"
+
+[tool.poetry.group.test.dependencies]
+parameterized = "~=0.9.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff.format]
+exclude = []
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+disallow_any_unimported = false
+ignore_missing_imports = true
+warn_return_any = true
+warn_unused_ignores = true

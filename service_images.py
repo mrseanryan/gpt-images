@@ -1,6 +1,8 @@
+from cornsnake import util_print
 import openai
 
 import service_api_key
+import config
 
 openai.api_key = service_api_key.get_openai_key()
 
@@ -11,16 +13,22 @@ def generate_images(word, image_count):
 
         IMPORTANT: do NOT place any text or words in the image.
     """
+    openai.api_type = "openai"
 
-    response = openai.Image.create(
+    if config.OPENAI_IMAGE_MODEL == "dall-e-3":
+        util_print.print_warning("This model only supports generating 1 image at a time")
+        image_count = 1
+
+    response = openai.images.generate(
         prompt=prompt,
         n=image_count,
-        #size="512x512"
-        size="1024x1024",
+        model=config.OPENAI_IMAGE_MODEL,
+        size=config.IMAGE_SIZE,
+        quality="standard"
     )
 
-    responses = response["data"]
+    responses = response.data
     image_urls = []
     for r in responses:
-        image_urls.append(r['url'])
+        image_urls.append(r.url)
     return image_urls

@@ -35,10 +35,15 @@ python ./generate_images_from_words.py <path to JSON file> <path to output direc
 
 ## Set up
 
+0. Install Python and poetry
+
+- Python 3.11
+- [Poetry](https://python-poetry.org/docs/)
+
 1. Install openai Python client.
 
 ```
-pip install openai
+poetry install
 ```
 
 2. Get an Open AI key
