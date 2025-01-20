@@ -15,10 +15,6 @@ def generate_images(word, image_count):
     """
     openai.api_type = "openai"
 
-    if config.OPENAI_IMAGE_MODEL == "dall-e-3":
-        util_print.print_warning("This model only supports generating 1 image at a time")
-        image_count = 1
-
     response = openai.images.generate(
         prompt=prompt,
         n=image_count,

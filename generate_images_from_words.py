@@ -1,6 +1,7 @@
 import os
 import requests
 from sys import argv
+from cornsnake import util_color, util_print
 
 import config
 import service_images
@@ -16,6 +17,13 @@ if (len(argv) != 3):
 path_to_json_words = argv[1]
 output_path_images_dir = argv[2]
 
+util_print.print_with_color(f"- using AI: {config.OPENAI_IMAGE_MODEL}", util_color.CONFIG_COLOR)
+
+IMAGES_PER_WORD = config.IMAGES_PER_WORD
+if config.OPENAI_IMAGE_MODEL == "dall-e-3":
+    util_print.print_warning("This model only supports generating 1 image at a time")
+    IMAGES_PER_WORD = 1
+
 words_to_description = util_json.read_words_from_json_file(path_to_json_words)
 print(f"Generating images for {len(words_to_description.keys())} words ...")
 
@@ -29,7 +37,7 @@ def calculate_word_out_path(word, output_dir, index):
     return os.path.join(output_dir, f"{word}_{index}.jpg")
 
 def generate_images_for_word(word, description, output_dir):
-    urls = service_images.generate_images(description, config.IMAGES_PER_WORD)
+    urls = service_images.generate_images(description, IMAGES_PER_WORD)
     index = 1
     for url in urls:
         download_to(url, calculate_word_out_path(word, output_dir, index))
@@ -57,6 +65,6 @@ for word in words_to_description.keys():
         generate_images_for_word(word, words_to_description[word], output_path_images_dir)
         print("    [generated]")
         if w != len(words_to_description):
-            util_wait.wait_seconds(config.WAIT_BETWEEN_IMAGES_IN_SECONDS * config.IMAGES_PER_WORD)
+            util_wait.wait_seconds(config.WAIT_BETWEEN_IMAGES_IN_SECONDS * IMAGES_PER_WORD)
 
 print(f"[done] - see {output_path_images_dir}")
