@@ -1,5 +1,4 @@
 import os
-import requests
 from sys import argv
 from cornsnake import util_color, util_print
 
@@ -27,24 +26,11 @@ if config.OPENAI_IMAGE_MODEL == "dall-e-3":
 words_to_description = util_json.read_words_from_json_file(path_to_json_words)
 print(f"Generating images for {len(words_to_description.keys())} words ...")
 
-def download_to(url, file_path):
-    r = requests.get(url, allow_redirects=True)
-    print(f"  saving image at {file_path}")
-    open(file_path, 'wb').write(r.content)
-
-def calculate_word_out_path(word, output_dir, index):
-    word = word.replace(' ', '-')
-    return os.path.join(output_dir, f"{word}_{index}.jpg")
-
 def generate_images_for_word(word, description, output_dir):
-    urls = service_images.generate_images(description, IMAGES_PER_WORD)
-    index = 1
-    for url in urls:
-        download_to(url, calculate_word_out_path(word, output_dir, index))
-        index += 1
+    service_images.generate_images_and_save(description, IMAGES_PER_WORD, output_dir)
 
 def are_images_already_generated(word, output_path_images_dir):
-    out_file_path = calculate_word_out_path(word, output_path_images_dir, 1)
+    out_file_path = service_images.calculate_word_out_path(word, output_path_images_dir, 1)
     return os.path.exists(out_file_path)
 
 if config.IS_DEBUG:
