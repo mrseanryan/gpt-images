@@ -27,7 +27,7 @@ words_to_description = util_json.read_words_from_json_file(path_to_json_words)
 print(f"Generating images for {len(words_to_description.keys())} words ...")
 
 def generate_images_for_word(word, description, output_dir):
-    service_images.generate_images_and_save(description, IMAGES_PER_WORD, output_dir)
+    service_images.generate_images_and_save(word, description, IMAGES_PER_WORD, output_dir)
 
 def are_images_already_generated(word, output_path_images_dir):
     out_file_path = service_images.calculate_word_out_path(word, output_path_images_dir, 1)

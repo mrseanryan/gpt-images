@@ -21,9 +21,9 @@ def calculate_word_out_path(word, output_dir, index):
     word = word.replace(' ', '-')
     return os.path.join(output_dir, f"{word}_{index}.jpg")
 
-def generate_images_and_save(word, image_count, output_dir) -> None:
+def generate_images_and_save(word, description, image_count, output_dir) -> None:
     prompt = f"""
-        Generate an image that is a typical representation of: <<{word}>>.
+        Generate an image that is a typical representation of: <<{description}>>.
         The image must be as realistic as possible, and for a general audience.
 
         IMPORTANT: do NOT place any text or words in the image.
