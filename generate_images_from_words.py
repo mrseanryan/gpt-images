@@ -30,8 +30,11 @@ def generate_images_for_word(word, description, output_dir):
     service_images.generate_images_and_save(word, description, IMAGES_PER_WORD, output_dir)
 
 def are_images_already_generated(word, output_path_images_dir):
-    out_file_path = service_images.calculate_word_out_path(word, output_path_images_dir, 1)
-    return os.path.exists(out_file_path)
+    for i in range(0, 2):
+        out_file_path = service_images.calculate_word_out_path(word, output_path_images_dir, i)
+        if os.path.exists(out_file_path):
+            return True
+    return False
 
 if config.IS_DEBUG:
     reduced = dict()
