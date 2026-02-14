@@ -44,6 +44,10 @@ python ./generate_images_from_words.py <path to JSON file> <path to output direc
 - Python 3.11
 - [Poetry](https://python-poetry.org/docs/)
 
+```
+poetry env use 3.11
+```
+
 1. Install openai Python client.
 
 ```
