@@ -3,7 +3,7 @@ from typing_extensions import Literal
 
 from openai import NotGiven
 
-IMAGES_PER_WORD = 1
+IMAGES_PER_WORD = 2
 
 IS_DEBUG = False
 
