@@ -9,7 +9,9 @@ from cornsnake import util_input, util_print
 
 client = OpenAI()
 
-OUTPUT_DIR = Path("output/sprites")
+OUTPUT_FILENAME_PREFIX = "alien_top_down"
+
+OUTPUT_DIR = Path(f"output/sprites/{OUTPUT_FILENAME_PREFIX}")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
 
@@ -21,7 +23,6 @@ CREATURE_TYPE = "alien"
 
 CANVAS_SIZE = "1536x1024"
 
-OUTPUT_FILENAME_PREFIX = "alien_top_down"
 
 def build_image_path(filename: str):
     return OUTPUT_DIR / filename.replace(" ", "_")
@@ -99,7 +100,7 @@ painted shading,
 {TEXTURE}.
 
 Background:
-plain white.
+- transparent background (no background).
 """
 
     image_filename = f"alien_reference_{direction}.png"
@@ -148,7 +149,7 @@ painted shading,
 {TEXTURE}.
 
 Background:
-plain white sprite sheet background.
+- transparent background (no background).
 """
 
     img_b64 = generate_image(prompt, CANVAS_SIZE, reference_path)
@@ -269,6 +270,9 @@ def prompt_and_slice_sheet(sheet_path: Path, animation_name: str, label: str):
 def main():
     util_print.print_section("Game Sprite Generation Pipeline")
     util_print.print_important(f"Using model: {MODEL}")
+    util_print.print_important(f"- Description: {DESCRIPTION}")
+    util_print.print_important(f"- Texture: {TEXTURE}")
+
     util_print.print_section("Step 1: generating direction references")
 
     ref_down = generate_direction_reference("DOWN toward the bottom of the screen")
