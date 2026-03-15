@@ -1,31 +1,6 @@
 {
-  "words_no_image": [
-    "shabrack",
-    "shako",
-    "shibboleth",
-    "shtetl",
-    "shtick",
-    "slogan",
-    
-    "sluice",
-    
-    "spry",
-    "squire",
-    
-    
-    "taffeta",
-    "trauma",
-    "tuna",
-    "ukase",
-    "veranda",
-    "vinegar",
-    "vodka",
-    "wadi",
-    "walleyed",
-    "yarmulke",
-    "yeshiva",
-    "yucca",
-    "zabuton",
-    "zaddik"
-  ]
+  "words_no_image": [],
+  "complex_words": {
+    "alien-sprite-sheet--7c": "scary green alien creature inspired by classic sci-fi xenomorph with elongated head, claws and tail."
+  }
 }
