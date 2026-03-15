@@ -7,6 +7,7 @@ import requests
 
 import service_api_key
 import config
+from prompts import build_prompt
 
 client = OpenAI(api_key=service_api_key.get_openai_key())
 
@@ -22,20 +23,38 @@ def calculate_word_out_path(word, output_dir, index):
     return os.path.join(output_dir, f"{word}_{index}.jpg")
 
 def generate_images_and_save(word, description, image_count, output_dir) -> None:
-    prompt = f"""
-        Generate an image that is a typical representation of: <<{description}>>.
-        The image must be as realistic as possible, and for a general audience.
+    prompt = build_prompt(word, description)
 
-        IMPORTANT: do NOT place any text or words in the image.
-    """
+    request_kwargs = {
+        'prompt': prompt,
+        'n': image_count,
+        'model': config.OPENAI_IMAGE_MODEL,
+        'size': config.IMAGE_SIZE,
+        'quality': config.ACTIVE_QUALITY,
+    }
 
-    response = client.images.generate(
-        prompt=prompt,
-        n=image_count,
-        model=config.OPENAI_IMAGE_MODEL,
-        size=config.IMAGE_SIZE,
-        quality=config.ACTIVE_QUALITY
-    )
+    reference_image_path = config.REFERENCE_IMAGE_PATH
+    if reference_image_path:
+        if os.path.isfile(reference_image_path):
+            print(f"  using reference image: {reference_image_path}")
+            with open(reference_image_path, 'rb') as reference_image:
+                try:
+                    response = client.images.edit(
+                        **request_kwargs,
+                        image=reference_image,
+                    )
+                except Exception as e:
+                    util_print.print_error(
+                        f"  [error] - failed to apply reference image via images.edit: {e}. Continuing without reference image."
+                    )
+                    response = client.images.generate(**request_kwargs)
+        else:
+            util_print.print_error(
+                f"  [error] - REFERENCE_IMAGE_PATH not found: {reference_image_path}. Continuing without reference image."
+            )
+            response = client.images.generate(**request_kwargs)
+    else:
+        response = client.images.generate(**request_kwargs)
 
     responses = response.data
     if not responses or len(responses) == 0:
