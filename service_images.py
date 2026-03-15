@@ -49,7 +49,7 @@ def generate_images_and_save(word, description, image_count, output_dir) -> None
                     )
                     response = client.images.generate(**request_kwargs)
         else:
-            util_print.print_error(
+            raise FileNotFoundError(
                 f"  [error] - REFERENCE_IMAGE_PATH not found: {reference_image_path}. Continuing without reference image."
             )
             response = client.images.generate(**request_kwargs)
