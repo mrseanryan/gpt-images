@@ -58,6 +58,18 @@ def generate_image(prompt: str, size: str, reference_image: Path | None = None):
     print("[done]")
     return result
 
+def should_recreate(image_path: Path, description: str) -> bool:
+    if image_path.exists():
+        print(f"{description.capitalize()} already exists [{image_path}].")
+        should_recreate = util_input.input_with_format_y_or_n(
+            "Do you want to re-create it? (y/n)",
+            default=False,
+        )
+        if not should_recreate:
+            print(f"Skipping generation for existing {description}.")
+            return False
+    return True
+
 # -------------------------------------------------
 # STEP 1 — Generate direction reference sprites
 # -------------------------------------------------
@@ -92,8 +104,7 @@ plain white.
 
     image_filename = f"alien_reference_{direction}.png"
     image_path  = build_image_path(image_filename)
-    if image_path.exists():
-        print(f"Reference image for {direction} already exists [{image_path}]. Skipping generation.")
+    if not should_recreate(image_path, "reference image"):
         return image_path
 
     img_b64 = generate_image(prompt, CANVAS_SIZE)
@@ -108,15 +119,9 @@ def generate_animation(direction: str, reference_path: Path):
 
     image_filename = f"{OUTPUT_FILENAME_PREFIX}_walk_{direction}.png"
     image_path = build_image_path(image_filename)
-    if image_path.exists():
-        print(f"Animation sheet already exists [{image_path}].")
-        should_recreate = util_input.input_with_format_y_or_n(
-            "Do you want to re-create it? (y/n)",
-            default=False,
-        )
-        if not should_recreate:
-            print(f"Skipping generation for existing animation sheet [{image_path}].")
-            return image_path
+
+    if not should_recreate(image_path, "animation sheet"):
+        return image_path
 
     prompt = f"""
 Game engine sprite atlas using the provided character reference.
@@ -203,12 +208,13 @@ def slice_sprite_atlas(atlas_path, animation_name: str, rows, cols):
 
 def main():
     util_print.print_section("Game Sprite Generation Pipeline")
+    util_print.print_important(f"Using model: {MODEL}")
     util_print.print_section("Step 1: generating direction references")
 
     ref_down = generate_direction_reference("DOWN toward the bottom of the screen")
     ref_right = generate_direction_reference("RIGHT toward the right side of the screen")
 
-    print("tip: to retry, you can delete the images you don't like, and run again (we skip existing reference images)")
+    util_print.print_important("tip: to retry, you can delete the images you don't like, and run again (we skip existing reference images)")
     if not util_input.input_with_format_y_or_n("Please check the reference images. Continue to animation generation? (y/n)", default=True):
         print("Aborting.")
         return
