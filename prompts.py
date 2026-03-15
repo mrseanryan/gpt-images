@@ -1,6 +1,8 @@
 import config
 import textwrap
 
+# TODO remove the game stuff from this file + config. BUT keep the reference image feature.
+
 def build_prompt(word: str, description: str) -> str:
     prompt = f"""
         Generate an image that is a typical representation of: <<{description}>>.
