@@ -160,6 +160,17 @@ plain white sprite sheet background.
 # -------------------------------------------------
 
 def combine_sheets(down_sheet: Path, right_sheet: Path):
+    output = OUTPUT_DIR / (OUTPUT_FILENAME_PREFIX + "_final_atlas.png")
+    if output.exists():
+        should_recreate = util_input.input_with_format_y_or_n(
+            f"Final atlas already exists [{output}]. Do you want to re-create it? (y/n)",
+            default=False,
+        )
+        if not should_recreate:
+            print("Skipping atlas assembly.")
+            return output
+
+    print("Assembling atlas...")
 
     down = Image.open(down_sheet)
     right = Image.open(right_sheet)
@@ -172,27 +183,33 @@ def combine_sheets(down_sheet: Path, right_sheet: Path):
     atlas.paste(down, (0, 0))
     atlas.paste(right, (0, down.height))
 
-    output = OUTPUT_DIR / (OUTPUT_FILENAME_PREFIX + "_final_atlas.png")
     atlas.save(output)
 
     return output
 
-def slice_sprite_atlas(atlas_path, animation_name: str, rows, cols):
+def slice_sprite_atlas(atlas_path, animation_name: str, rows, cols, top_margin=0, left_margin=0, row_height=None):
     atlas = Image.open(atlas_path)
 
     output_dir = OUTPUT_DIR / "frames"
-    output_dir.mkdir(exist_ok=True)
+    if output_dir.exists():
+        for file in output_dir.glob(f"{animation_name}_*.png"):
+            file.unlink()
+    else:
+        output_dir.mkdir(exist_ok=True)
 
     frame_index = 0
 
-    frame_width = atlas.width // cols
-    frame_height = atlas.height // rows
+    usable_width = atlas.width - left_margin
+    usable_height = atlas.height - top_margin
+
+    frame_width = usable_width // cols
+    frame_height = row_height if row_height is not None else usable_height // rows
 
     for row in range(rows):
         for col in range(cols):
 
-            x = col * frame_width
-            y = row * frame_height
+            x = left_margin + (col * frame_width)
+            y = top_margin + (row * frame_height)
 
             frame = atlas.crop((x, y, x + frame_width, y + frame_height))
             frame = frame.resize((256,256), Image.NEAREST)
@@ -201,6 +218,49 @@ def slice_sprite_atlas(atlas_path, animation_name: str, rows, cols):
             frame_index += 1
 
     print(f"Frames for {animation_name} saved to {output_dir}")
+    return output_dir
+
+
+def prompt_and_slice_sheet(sheet_path: Path, animation_name: str, label: str):
+    columns = int(util_input.input_custom(
+        f"View the {label} sheet {sheet_path} - tell me the ACTUAL number of columns in the sprite sheet (default 6): ",
+        default="6",
+    ))
+    rows = int(util_input.input_custom(
+        " - and the ACTUAL number of rows in the sprite sheet (default 2): ",
+        default="2",
+    ))
+
+    util_print.print_important("tip: view the image in MS Paint or similar, to check the top/left margins and the actual row height.")
+    while True:
+        left_margin = int(util_input.input_custom("Left margin in pixels (default 0): ", default="0"))
+        top_margin = int(util_input.input_custom("Top margin in pixels (default 0): ", default="0"))
+        with Image.open(sheet_path) as atlas:
+            computed_row_height = max(1, (atlas.height - top_margin) // rows)
+        row_height = int(util_input.input_custom(
+            f"Row height in pixels (default {computed_row_height}): ",
+            default=str(computed_row_height),
+        ))
+
+        output_dir = slice_sprite_atlas(
+            sheet_path,
+            animation_name,
+            cols=columns,
+            rows=rows,
+            top_margin=top_margin,
+            left_margin=left_margin,
+            row_height=row_height,
+        )
+
+        frame_count = columns * rows
+        util_print.print_result(f"{frame_count} frames saved to: {output_dir}")
+
+        try_new_margin = util_input.input_with_format_y_or_n(
+            f"Do you want to create the frames again (re-slice) [{sheet_path}] with different margins? (y/n)",
+            default=False,
+        )
+        if not try_new_margin:
+            break
 
 # -------------------------------------------------
 # MAIN PIPELINE
@@ -226,17 +286,17 @@ def main():
     util_print.print_section("Step 3: assembling atlas")
 
     atlas = combine_sheets(walk_down, walk_right)
-    util_print.print_result(f"Full atlas: {atlas}")
+    util_print.print_custom(f"Full atlas: {atlas} (warning: right and down might NOT be aligned)")
+    util_print.print_result(f"walk_down sheet: {walk_down}")
+    util_print.print_result(f"walk_right sheet: {walk_right}")
+    util_print.print_important("tip: check the sheets in an editor with a overlay guides such as Affinity Photo (View | Guides). Crop each file so that each sprite fits within the grid.")
+    if not util_input.input_with_format_y_or_n("Please check the atlas image. Continue to slicing into frames? (y/n)", default=True):
+        print("Skipping the sheet slicing step.")
+    else:
+        util_print.print_section("Step 4: slicing Step 2 sheets into sprite frames")
 
-    util_print.print_section("Step 4: slicing Step 2 sheets into sprite frames")
-
-    down_columns = int(util_input.input_custom(f"View the DOWN sheet {walk_down} - tell me the ACTUAL number of columns in the sprite sheet (default 6): ", default="6"))
-    down_rows = int(util_input.input_custom(f" - and the ACTUAL number of rows in the sprite sheet (default 2): ", default="2"))
-    slice_sprite_atlas(walk_down, "walk_down", cols=down_columns, rows=down_rows)
-
-    right_columns = int(util_input.input_custom(f"View the RIGHT sheet {walk_right} - tell me the ACTUAL number of columns in the sprite sheet (default 6): ", default="6"))
-    right_rows = int(util_input.input_custom(f" - and the ACTUAL number of rows in the sprite sheet (default 2): ", default="2"))
-    slice_sprite_atlas(walk_right, "walk_right", cols=right_columns, rows=right_rows)
+        prompt_and_slice_sheet(walk_down, "walk_down", "DOWN")
+        prompt_and_slice_sheet(walk_right, "walk_right", "RIGHT")
 
     util_print.print_result("Done.")
 
