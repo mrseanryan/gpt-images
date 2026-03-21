@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e
 
-poetry run python generate_images_from_words.py ./data/words_no_image.json ./output
+uv run python generate_images_from_words.py ./data/words_no_image.json ./output

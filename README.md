@@ -39,19 +39,18 @@ python ./generate_images_from_words.py <path to JSON file> <path to output direc
 
 ## Set up
 
-0. Install Python and poetry
-
-- Python 3.11
-- [Poetry](https://python-poetry.org/docs/)
+0. Install uv
 
 ```
-poetry env use 3.11
+pip install uv
 ```
 
-1. Install openai Python client.
+1. Install Python dependencies including openai client:
 
 ```
-poetry install
+uv python install 3.11
+uv venv --python 3.11
+uv sync
 ```
 
 2. Get an Open AI key
