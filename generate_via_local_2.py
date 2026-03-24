@@ -1,6 +1,9 @@
 import torch
 from diffusers import FluxPipeline
 
+# To be safe, install via:
+# uv sync --index-strategy unsafe-best-match
+
 # Tested with # GPU - RTX 5070. CUDA 13
 #
 # note: you need to log in to Hugging Face and have access to the model to run this code.
@@ -10,9 +13,12 @@ from diffusers import FluxPipeline
 # - you can say 'y' to git credentials, as it may help pull/push models later
 # - make sure it has at least “read” permissions
 # - check with: uv run hf auth whoami
-
+if torch.cuda.is_available():
+    print(f"[CUDA] Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f}GB")
+    torch.cuda.empty_cache()
+    print("[CUDA] Cache cleared")
 # Determine device and load model
-pipe = FluxPipeline.from_pretrained("black-forest-labs/FLUX.1-dev", torch_dtype=torch.bfloat16)
+pipe = FluxPipeline.from_pretrained("black-forest-labs/FLUX.1-dev", torch_dtype=torch.float32)  # was bfloat16 but that produced a segmentation fault.
 pipe.enable_model_cpu_offload()  # Keep peak VRAM lower by moving model chunks to CPU between steps; this increases CPU usage by design.
 
 print(f"[Device] CUDA available: {torch.cuda.is_available()}, GPU: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'N/A'}")
