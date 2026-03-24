@@ -1,5 +1,6 @@
 import sys
 import torch
+from cornsnake import util_file, util_time
 from diffusers import FluxPipeline
 
 # To be safe, install via:
@@ -14,6 +15,9 @@ from diffusers import FluxPipeline
 # - you can say 'y' to git credentials, as it may help pull/push models later
 # - make sure it has at least “read” permissions
 # - check with: uv run hf auth whoami
+
+start_time = util_time.start_timer()
+
 if torch.cuda.is_available():
     print(f"[CUDA] Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f}GB")
     torch.cuda.empty_cache()
@@ -32,8 +36,8 @@ prompt = sys.argv[1]
 print(f"[Prompt] {prompt}")
 image = pipe(
     prompt,
-    height=512,
-    width=512,
+    height=1024,
+    width=1024,
     guidance_scale=3.5,
     num_inference_steps=50,
     max_sequence_length=512,
@@ -42,5 +46,9 @@ image = pipe(
 
 # Save the image
 output_path = "output/local_gpu_output.png"
+output_path = util_file.get_unique_filepath(output_path)  # Avoid overwriting existing files
 print(f"Saving image to {output_path}")
 image.save(output_path)
+
+seconds_elapsed = util_time.end_timer(start_time)
+print(f"Elapsed time: {util_time.describe_elapsed_seconds(seconds_elapsed)}.")
