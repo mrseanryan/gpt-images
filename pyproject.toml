@@ -21,7 +21,16 @@ keywords = ["genai", "image-generation", "image-generator-using-openai-api", "ge
 dependencies = [
     "openai>=2.8.0,<3.0.0",
     "cornsnake>=0.1.1,<0.2.0",
-    "requests>=2.32.5,<3.0.0",
+    "torch>=2.6.0,<3.0.0",
+    "torchvision>=0.21.0,<1.0.0",
+    "torchaudio>=2.6.0,<3.0.0",
+    "requests>=2.32.5",
+    "diffusers>=0.37.0,<0.38.0",
+    "transformers>=5.3.0,<6.0.0",
+    "accelerate>=1.13.0,<2.0.0",
+    "safetensors>=0.7.0,<0.8.0",
+    "sentencepiece>=0.2.1,<0.3.0",
+    "huggingface-hub>=1.7.2",
 ]
 
 [project.urls]
@@ -40,6 +49,12 @@ test = [
 
 [tool.uv]
 package = false
+
+[[tool.uv.index]]
+url = "https://pypi.org/simple"
+
+[[tool.uv.index]]
+url = "https://download.pytorch.org/whl/cu130"
 
 [tool.ruff.format]
 exclude = []
