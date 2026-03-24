@@ -38,6 +38,11 @@ image = pipe(
     prompt,
     height=1024,
     width=1024,
+    # guidance_scale: 1..15 # Higher values may produce more detailed images but can also lead to artifacts; adjust based on your needs.
+    # - Higher values - prompt strictly follows the prompt
+    # - Lower values - prompt loosely follows the prompt, allowing for more creativity and variation in the generated image.
+    # - 3.5 is a relatively low value, so the Flux model will balance between following your prompt and using its own learned patterns.
+    #   - This often produces more natural, varied results while still being somewhat prompt-guided.
     guidance_scale=3.5,
     num_inference_steps=50,
     max_sequence_length=512,
